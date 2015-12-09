@@ -8,9 +8,8 @@
 	<title>Flip Coins</title>
 </head>
 <body>
-<div>n (>=3): <input type="text" name="n"></div>
-<div>k: <input type="text" name="k"></div>
-<div>Direction: <input type="radio" name="left">left <input type="radio" name="right">right</div>
-<!--TODO add label to radio button-->
+<div class="input" id="n">n (3 <= n <= 20): <input type="text" name="n"></div><div class="input" id="k">k (1 <= k <= n * 2): <input type="text" name="k"></div>
+<div id="direction">Direction: <label><input type="radio" name="direction">left</label> <label><input type="radio" name="direction">right</label></></div>
+<div id="field"><div class="coin"></div></div>
 </body>
 </html>

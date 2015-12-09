@@ -1,0 +1,22 @@
+input[type=text]{
+	width: 2em;
+}
+
+.spacer1{
+	width: 5em;
+	background-color: red;
+}
+
+.input{
+	display: inline-block;
+}
+
+#k{
+	margin-left: 2em;
+}
+
+#direction{
+	height: 3em;
+	background-color: red;
+	vertical-align: middle;
+}
