@@ -8,8 +8,40 @@
 	<title>Flip Coins</title>
 </head>
 <body>
-<div class="input" id="n">n (3 <= n <= 20): <input type="text" name="n"></div><div class="input" id="k">k (1 <= k <= n * 2): <input type="text" name="k"></div>
-<div id="direction">Direction: <label><input type="radio" name="direction">left</label> <label><input type="radio" name="direction">right</label></></div>
-<div id="field"><div class="coin"></div></div>
+<table>
+	<tr>
+		<td class="c1">
+			n (3 <= n <= 20):
+			<!--<div class="input" id="n">n (3 <= n <= 20): </div>-->
+		</td>
+		<td>
+			<input type="text" name="n">
+		</td>
+	</tr>
+	<tr>
+		<td class="c1">
+			k (1 <= k <= n * 2):
+			<!--<div class="input" id="k">k (1 <= k <= n * 2): </div>-->
+		</td>
+		<td>
+			<input type="text" name="k">
+		</td>
+	</tr>
+	<tr>
+		<td class="c1" colspan="2">
+			<button type="button" id="play">Play</button>
+		</td>
+	</tr>
+</table>
+<div id="container">
+	<div id="direction">
+		<input type="radio" name="direction" id="left"><label for="left">:left</label> <input type="radio" name="direction" id="right"><label for="right">:right</label>
+	</div>
+	<div id="field">
+	</div>
+</div>
 </body>
 </html>
+
+<!--TODO-->
+<!--shortcut key: n to focus n textbox and k for k textbox, left to select radio for left and right for right radio-->
