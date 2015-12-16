@@ -1,8 +1,10 @@
 $(document).ready(function(){
 	var id_play = '#play';
 
-	//when "play is pressed"
+	//setup a game when "play" is pressed
 	$(id_play).click(setup);
+
+	//flip coins when a coin is clicked
 });
 
 function setup(){
@@ -12,7 +14,37 @@ function setup(){
 	var n = $(input_name_n).val();
 	var k = $(input_name_k).val();
 
-	//validate n and k
+	//validate n (not empty, 3 <= n <= 20)
+	try{
+		if(n == "") throw "empty";
+		if(n < 3) throw "too low";
+		if(n > 20) throw "too high";
+	}
+	catch(err){
+		alert("n is " + err);
+		//clear textbox n
+		$(input_name_n).val("");
+		//focus textbox n
+		$(input_name_n).focus();
+		
+		return;
+	}
+
+	//validate k (not empty, 1 <= k <= n*2)
+	try{
+		if(k == "") throw "empty";
+		if(k < 1) throw "too low";
+		if(k > n * 2) throw "too high";
+	}
+	catch(err){
+		alert("k is " + err);
+		//clear textbox k
+		$(input_name_k).val("");
+		//focus textbox k
+		$(input_name_k).focus();
+		
+		return;
+	}
 
 	//place coins
 	var coin = "<div class=\"coin\"></div>"
