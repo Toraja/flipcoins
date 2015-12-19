@@ -45,3 +45,17 @@ button {
 	width: 40vw;
 	background-color: black;
 }
+
+.coin{
+	/*height: 2vw;*/
+	/*width: 2vw;*/
+	border-radius: 50%;
+}
+
+.heads{
+	background-color: orange;
+}
+
+.tails{
+	background-color: grey;
+}
