@@ -28,34 +28,12 @@ function setup(){
 	var k = $(input_name_k).val();
 
 	//validate n (not empty, 3 <= n <= 20)
-	try{
-		if(n == "") throw "empty";
-		if(n < 3) throw "too low";
-		if(n > 20) throw "too high";
-	}
-	catch(err){
-		alert("n is " + err);
-		//clear textbox n
-		$(input_name_n).val("");
-		//focus textbox n
-		$(input_name_n).focus();
-		
+	if(! validateInput(input_name_n, 3, 20, "n")){
 		return;
 	}
 
 	//validate k (not empty, 1 <= k <= n*2)
-	try{
-		if(k == "") throw "empty";
-		if(k < 1) throw "too low";
-		if(k > n * 2) throw "too high";
-	}
-	catch(err){
-		alert("k is " + err);
-		//clear textbox k
-		$(input_name_k).val("");
-		//focus textbox k
-		$(input_name_k).focus();
-		
+	if(! validateInput(input_name_k, 1, eval("n * 2"), "k")){
 		return;
 	}
 
@@ -77,6 +55,27 @@ function setup(){
 stub("setup is ok");
 }
 
+function validateInput(targetInput, lowerLimit, upperLimit, msgSubject){
+	var val = $(targetInput).val();
+	var valid = true;
+
+	try{
+		if(val == "") throw "empty";
+		if(val < lowerLimit) throw "too low";
+		if(val > upperLimit) throw "too high";
+	}
+	catch(err){
+		alert(msgSubject + " is " + err);
+		//clear invalid textbox
+		$(targetInput).val("");
+		//focus invalid textbox
+		$(targetInput).focus();
+		
+		valid = false;
+	}
+
+	return valid;
+}
 
 function createCoin(side, count){
 	var heads = "heads";

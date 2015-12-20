@@ -30,7 +30,7 @@ button {
 	left: 50%;
 	background-color: gray;
 	position: absolute;
-	transform: translate(-50%, -50%)
+	transform: translate(-50%, -50%);
 }
 
 #direction{
@@ -50,6 +50,10 @@ button {
 	/*height: 2vw;*/
 	/*width: 2vw;*/
 	border-radius: 50%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	position: absolute;
 }
 
 .heads{
