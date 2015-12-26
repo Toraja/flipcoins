@@ -156,11 +156,11 @@ function createCoins(number){
 
 /*
  *for debug
- *this popup the argument or line number by default
+ *this popup the argument or line number if no argument is supplied
  */
 function stub(msg){
 	if(DEBUG){
-		if(msg == ""){
+		if(msg == undefined){
 			var stackMsg = new Error().stack.split("\n");
 			//var linenum = stackMsg[2].match(/:\d+:/).match(/\d+/);
 			var linenum = stackMsg[2].match(/:\d+:/)[0].match(/\d+/);
