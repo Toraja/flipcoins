@@ -1,7 +1,11 @@
 var DEBUG = true;
+
 var input_name_n = 'input[name="n"]';
 var input_name_k = 'input[name="k"]';
-var id_play = '#play';
+var id_setup = '#setup';
+var id_random = '#random';
+var id_start = '#start';
+var id_quit = '#quit';
 var id_field = '#field';
 var id_coin = '#coin';
 var cls_coin = '.coin';
@@ -11,33 +15,38 @@ $(document).ready(function(){
 	// debuggers
 	debugSetup();
 
-	//setup a game when "play" is pressed
-	$(id_play).click(setup);
+	//let user setup a game when "Set up" is pressed
+	$(id_random).click(random);
 
+	//randomly setup a game when "Random" is pressed
+	$(id_random).click(random);
+
+	
 	//flip coins when a coin is clicked
 	
 stub(".ready is ok");
 });
 
-
+/*
+ *place coins with tails facing up
+ *let user decide the side of each coin
+ */
 function setup(){
+
+}
+
+/*
+ *randomly set the side of coins
+ *user can set up manually after coins were placed
+ *disable "Set up" button TODO
+ */
+function random(){
 	//empty out the field
 	$(id_field).empty();
 
 	//get value of n and k
 	var n = $(input_name_n).val();
-	var k = $(input_name_k).val();
-
-	// ***** input validation *****
-	//validate n (not empty, 3 <= n <= 20)
-	if(! validateInput(input_name_n, 3, 20, "n")){
-		return;
-	}
-
-	//validate k (not empty, 1 <= k <= n*2)
-	if(! validateInput(input_name_k, 1, eval("n * 2"), "k")){
-		return;
-	}
+	//var k = $(input_name_k).val();
 
 	// ***** place coins *****
 	// consider the field as "plane" in mathematics
@@ -96,30 +105,62 @@ function setup(){
 		$(id_coin_n).css({"left": coordX, "bottom": coordY});
 	}
 	
-stub("setup is ok");
+stub("random is ok");
 }
 
+/*
+ *disable "Set up" and "Random" button, and "Start" button itself
+ *enable "Quit" button
+ *reset the number of click
+ *start counting the number of click
+ *display congraturation message when the game is done?
+ */
+function start(){
+	
+}
+
+
+function quit(){
+
+}
 
 /*
  *validate input 
  */
-function validateInput(targetInput, lowerLimit, upperLimit, msgSubject){
-	var val = $(targetInput).val();
-	var valid = true;
+function validateInput(){
 
-	try{
-		if(val == "") throw "empty";
-		if(val < lowerLimit) throw "too low";
-		if(val > upperLimit) throw "too high";
-	}
-	catch(err){
-		alert(msgSubject + " is " + err);
-		//clear invalid textbox
-		$(targetInput).val("");
-		//focus invalid textbox
-		$(targetInput).focus();
+	/*
+	 *private function for validateInput
+	 */
+	function validateHighLowEmpty(targetInput, lowerLimit, upperLimit, msgSubject){
+		var val = $(targetInput).val();
 		
-		valid = false;
+		try{
+			if(val == "") throw "empty";
+			if(val < lowerLimit) throw "too low";
+			if(val > upperLimit) throw "too high";
+		}
+		catch(err){
+			alert(msgSubject + " is " + err);
+			//clear invalid textbox
+			$(targetInput).val("");
+			//focus invalid textbox
+			$(targetInput).focus();
+			
+			//rethrow the err for the caller to handle it
+			throw err
+		}
+	}
+
+	// ***** input validation *****
+	//validate n (not empty, 3 <= n <= 20)
+	if(! validateInput(input_name_n, 3, 20, "n")){
+		return valid;
+	}
+
+	//validate k (not empty, 1 <= k <= n*2)
+	if(! validateInput(input_name_k, 1, eval("n * 2"), "k")){
+		return valid;
 	}
 
 	return valid;
@@ -162,7 +203,6 @@ function stub(msg){
 	if(DEBUG){
 		if(msg == undefined){
 			var stackMsg = new Error().stack.split("\n");
-			//var linenum = stackMsg[2].match(/:\d+:/).match(/\d+/);
 			var linenum = stackMsg[2].match(/:\d+:/)[0].match(/\d+/);
 			msg = "line: " + linenum;
 		}

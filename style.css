@@ -5,14 +5,17 @@ input[type=text]{
 input[type=radio]{
 }
 
-/*label {*/
-	/*margin: 5em;*/
-/*}*/
+table{
+	width: 15vw;
+}
+
+#table2 td{
+	width: 7.5vw;
+}
 
 #right {
 	margin-left: 2em;
 }
-
 
 #k{
 }
