@@ -16,7 +16,7 @@ $(document).ready(function(){
 	debugSetup();
 
 	//let user setup a game when "Set up" is pressed
-	$(id_random).click(random);
+	//$(id_random).click(random);
 
 	//randomly setup a game when "Random" is pressed
 	$(id_random).click(random);
@@ -56,9 +56,7 @@ function random(){
 	createCoins(n);
 
 	//set coin size
-	var sizeCoeff = (3 / 18).toFixed(3);		//coefficient for increase in size
-	var coinSize = 5 - ((n - 3) * sizeCoeff)	//size changes depending on the num of coins
-	$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
+	setCoinSize(n);
 
 	//adjusc coin position
 	//calculate coordinates for each coins
@@ -107,8 +105,8 @@ function random(){
 	
 stub("random is ok");
 }
-
 /*
+
  *disable "Set up" and "Random" button, and "Start" button itself
  *enable "Quit" button
  *reset the number of click
@@ -168,8 +166,10 @@ function validateInput(){
 
 /*
  *create coins the id of which is 0 to n - 1
+ *the side of the first coin (coin0) is always tails
+ *if "side" parameter is undefined, the side of coins are determined randomly
  */
-function createCoins(number){
+function createCoins(number, side){
 	var heads = "heads";
 	var tails = "tails";
 	var coinDiv1 = '<div class="coin ';
@@ -183,16 +183,34 @@ function createCoins(number){
 
 	// determine the side of the rest of the coins
 	for(i = 1; i < number; i++){
-		if(Math.floor(Math.random() * 2) == 0){
-			coinSide = heads;
+		if(side == undefined){
+			if(Math.floor(Math.random() * 2) == 0){
+				coinSide = heads;
+			}
+			else{
+				coinSide = tails;
+			}
 		}
 		else{
-			coinSide = tails;
+			coinSide = side;
 		}
 
 		coinElement = coinDiv1 + coinSide + coinDiv2 + i + coinDiv3;
 		$(id_field).append(coinElement);
 	}
+}
+
+/*
+ *adjust the size of coins depending on the number of coins(n)
+ */
+function setCoinSize(number){
+	var sizeCoeff = (3 / 18).toFixed(3);			//coefficient for increase in size
+	var coinSize = 5 - ((number - 3) * sizeCoeff)	//size changes depending on the num of coins
+	$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
+}
+
+function adjustCoinsPosition(){
+
 }
 
 /*
