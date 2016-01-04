@@ -6,6 +6,8 @@ var id_setup = '#setup';
 var id_random = '#random';
 var id_start = '#start';
 var id_quit = '#quit';
+var id_left = '#left';
+var id_right = '#right';
 var id_field = '#field';
 var id_coin = '#coin';
 var cls_coin = '.coin';
@@ -15,12 +17,15 @@ $(document).ready(function(){
 	// debuggers
 	debugSetup();
 
+	$(document).keyup(handleShortcutKey);
+
 	//let user setup a game when "Set up" is pressed
-	//$(id_random).click(random);
+	$(id_setup).click(setup);
 
 	//randomly setup a game when "Random" is pressed
 	$(id_random).click(random);
 
+	//start a game
 	
 	//flip coins when a coin is clicked
 	
@@ -32,7 +37,23 @@ stub(".ready is ok");
  *let user decide the side of each coin
  */
 function setup(){
+	//empty out the field
+	$(id_field).empty();
 
+	//get value of n and k
+	var n = $(input_name_n).val();
+	//var k = $(input_name_k).val();
+
+	//create as many coins as "n" and put them in the field
+	createCoins(n, "tails");
+
+	//set coin size
+	setCoinSize(n);
+
+	//place coins nicely
+	adjustCoinsPosition(n);
+
+stub("setup is ok");
 }
 
 /*
@@ -48,61 +69,15 @@ function random(){
 	var n = $(input_name_n).val();
 	//var k = $(input_name_k).val();
 
-	// ***** place coins *****
-	// consider the field as "plane" in mathematics
-	// the origin of the plane is the center of the field
-	
 	//create as many coins as "n" and put them in the field
 	createCoins(n);
 
 	//set coin size
 	setCoinSize(n);
 
-	//adjusc coin position
-	//calculate coordinates for each coins
-	var radius = 42;		// radius of the circle of coins (percentage of the length of a side of field)
-	var centralAngle = Math.floor(360 / n);	// central angle of n-gon
+	//place coins nicely
+	adjustCoinsPosition(n);
 
-	for(i = 0; i < n; i++){
-		var coordX = 50; 		// base value of css "left" property (center of the field)
-		var coordY = 50; 		// base value of css "bottom" property (center of the field)
-		var id_coin_n = id_coin + i;		// id of each coin, the top being "coin0" and incremented by 1 clockwise
-		var currentAngle = centralAngle * i;		// angle between the top apex and n(i)th apex
-		var apexRegion = Math.floor(currentAngle / 90);		// region where apex is located
-		var coordinateAngle = currentAngle % 90;		// angle between n(i)th apex and coodinate axis
-		var radian = Math.PI * (coordinateAngle / 180);
-		var opposite = radius * Math.sin(radian);
-		var adjacent = radius * Math.cos(radian);
-
-		switch(apexRegion){
-			case 0:
-				coordX += opposite;
-				coordY += adjacent;
-				break;
-			case 1:
-				coordX += adjacent;
-				coordY += (opposite * -1);
-				break;
-			case 2:
-				coordX += (opposite * -1);
-				coordY += (adjacent * -1);
-				break;
-			case 3:
-				coordX += (adjacent * -1);
-				coordY += opposite;
-				break;
-			default:
-				//TODO error handling
-				alert("error");
-				break;
-		}
-
-		coordX = coordX + "%";
-		coordY = coordY + "%";
-
-		$(id_coin_n).css({"left": coordX, "bottom": coordY});
-	}
-	
 stub("random is ok");
 }
 /*
@@ -117,10 +92,10 @@ function start(){
 	
 }
 
-
 function quit(){
 
 }
+
 
 /*
  *validate input 
@@ -209,8 +184,110 @@ function setCoinSize(number){
 	$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
 }
 
-function adjustCoinsPosition(){
+/*
+ *place coins nicely (on each apex of n-gon)
+ *consider the field as "plane" in mathematics
+ *the origin of the plane is the center of the field
+ */
+function adjustCoinsPosition(number){
+	//calculate coordinates for each coins
+	var radius = 42;		// radius of the circle of coins (percentage of the length of a side of field)
+	var centralAngle = Math.floor(360 / number);	// central angle of n-gon
 
+	for(i = 0; i < number; i++){
+		var coordX = 50; 		// base value of css "left" property (center of the field)
+		var coordY = 50; 		// base value of css "bottom" property (center of the field)
+		var id_coin_n = id_coin + i;		// id of each coin, the top being "coin0" and incremented by 1 clockwise
+		var currentAngle = centralAngle * i;		// angle between the top apex and n(i)th apex
+		var apexRegion = Math.floor(currentAngle / 90);		// region where apex is located
+		var coordinateAngle = currentAngle % 90;		// angle between n(i)th apex and coodinate axis
+		var radian = Math.PI * (coordinateAngle / 180);
+		var opposite = radius * Math.sin(radian);
+		var adjacent = radius * Math.cos(radian);
+
+		switch(apexRegion){
+			case 0:
+				coordX += opposite;
+				coordY += adjacent;
+				break;
+			case 1:
+				coordX += adjacent;
+				coordY += (opposite * -1);
+				break;
+			case 2:
+				coordX += (opposite * -1);
+				coordY += (adjacent * -1);
+				break;
+			case 3:
+				coordX += (adjacent * -1);
+				coordY += opposite;
+				break;
+			default:
+				//TODO error handling
+				alert("error");
+				break;
+		}
+
+		coordX = coordX + "%";
+		coordY = coordY + "%";
+
+		$(id_coin_n).css({"left": coordX, "bottom": coordY});
+	}
+
+}
+
+/*
+ *handle user keypress
+ */
+function handleShortcutKey(event){
+	switch(event.which){
+		case 78:	// n
+			event.preventDefault();
+			$(input_name_n).focus();
+			break;
+		case 75:	// k
+			event.preventDefault();
+			$(input_name_k).focus();
+			break;
+		case 85:	// u
+			event.preventDefault();
+			$(id_setup)
+				.focus()
+				.click();
+			break;
+		case 82:	// r
+			event.preventDefault();
+			$(id_random)
+				.focus()
+				.click();
+			break;
+		case 83:	// s
+			event.preventDefault();
+			$(id_start)
+				.focus()
+				.click();
+			break;
+		case 81:	// q
+			event.preventDefault();
+			$(id_quit)
+				.focus()
+				.click();
+			break;
+		case 37:	// left arrow
+			event.preventDefault();
+			$(id_left)
+				.focus()
+				.prop("checked", true);
+			break;
+		case 39:	// right arrow
+			event.preventDefault();
+			$(id_right)
+				.focus()
+				.prop("checked", true);
+			break;
+		default:
+			break;
+	}
 }
 
 /*
