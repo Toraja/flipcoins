@@ -5,16 +5,16 @@ input[type=text]{
 input[type=radio]{
 }
 
-table{
+.setupinfo{
 	width: 15vw;
 }
 
 #table2 td{
-	width: 7.5vw;
+	width: 50%;
 }
 
 #right {
-	margin-left: 2em;
+	/*margin-left: 2em;*/
 }
 
 .c1{
@@ -30,30 +30,38 @@ button {
 }
 
 #container{
+	width: 40vw;
 	top: 50%;
 	left: 50%;
-	background-color: gray;
 	position: absolute;
 	transform: translate(-50%, -50%);
+	background-color: gray;
 }
 
-#direction{
+#gameinfo{
+	width: 100%;
 	text-align: center;
 	line-height: 2em;
+	table-layout: fixed;
 	/*vertical-align: middle;*/
 	/*TODO vertical align contents*/
 }
 
+#gameinfo td{
+	width: 100%;
+	border: 2px solid black;
+	font-size: 1.3em;
+}
+
 #field{
 	height: 40vw;
-	width: 40vw;
-	background-color: black;
 	position: relative;
+	background-color: black;
 }
 
 .coin{
 	border-radius: 50%;
-	transform: translate(-50%, 50%);
+	transform: translate(-50%, 70%);
 	position: absolute;
 }
 

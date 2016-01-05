@@ -9,7 +9,7 @@
 	<title>Flip Coins</title>
 </head>
 <body>
-<table id="table1">
+<table id="table1" class="setupinfo">
 	<tr>
 		<td class="c1">
 			<span class="underline">n</span> (3 <= n <= 20):
@@ -27,7 +27,7 @@
 		</td>
 	</tr>
 </table>
-<table id="table2">
+<table id="table2" class="setupinfo">
 	<tr>
 		<td>
 			<button type="button" id="setup">Set <span class="underline">u</span>p</button>
@@ -38,17 +38,27 @@
 	</tr>
 	<tr>
 		<td>
-			<button type="button" id="start"><span class="underline">S</span>tart</button>
+			<button type="button" id="start" disabled><span class="underline">S</span>tart</button>
 		</td>
 		<td>
-			<button type="button" id="quit"><span class="underline">Q</span>uit</button>
+			<button type="button" id="quit" disabled><span class="underline">Q</span>uit</button>
 		</td>
 	</tr>
 </table>
 <div id="container">
-	<div id="direction">
-		<input type="radio" name="direction" id="left"><label for="left">:left</label> <input type="radio" name="direction" id="right"><label for="right">:right</label>
-	</div>
+	<table id="gameinfo">
+		<tr>
+			<td>
+				<input type="radio" name="direction" id="left"><label for="left">:left</label>
+			</td>
+			<td>
+				[ trial: <span id="count">0</span> ]
+			</td>
+			<td>
+				<input type="radio" name="direction" id="right"><label for="right">:right</label>
+			</td>
+		</tr>
+	</table>
 	<div id="field">
 	</div>
 </div>

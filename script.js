@@ -10,24 +10,16 @@ var id_left = '#left';
 var id_right = '#right';
 var id_field = '#field';
 var id_coin = '#coin';
+var id_count= '#count';
 var cls_coin = '.coin';
 
-
 $(document).ready(function(){
-	// debuggers
+	// provide default value for n and k
 	debugSetup();
 
 	$(document).keyup(handleShortcutKey);
-
-	//let user setup a game when "Set up" is pressed
 	$(id_setup).click(setup);
-
-	//randomly setup a game when "Random" is pressed
 	$(id_random).click(random);
-
-	//start a game
-	
-	//flip coins when a coin is clicked
 	
 stub(".ready is ok");
 });
@@ -40,18 +32,14 @@ function setup(){
 	//empty out the field
 	$(id_field).empty();
 
-	//get value of n and k
-	var n = $(input_name_n).val();
-	//var k = $(input_name_k).val();
-
 	//create as many coins as "n" and put them in the field
+	var n = $(input_name_n).val();
 	createCoins(n, "tails");
-
-	//set coin size
 	setCoinSize(n);
-
-	//place coins nicely
 	adjustCoinsPosition(n);
+
+	//enable start button
+	enableButton(id_start);
 
 stub("setup is ok");
 }
@@ -59,24 +47,19 @@ stub("setup is ok");
 /*
  *randomly set the side of coins
  *user can set up manually after coins were placed
- *disable "Set up" button TODO
  */
 function random(){
 	//empty out the field
 	$(id_field).empty();
 
-	//get value of n and k
-	var n = $(input_name_n).val();
-	//var k = $(input_name_k).val();
-
 	//create as many coins as "n" and put them in the field
+	var n = $(input_name_n).val();
 	createCoins(n);
-
-	//set coin size
 	setCoinSize(n);
-
-	//place coins nicely
 	adjustCoinsPosition(n);
+
+	//enable start button
+	enableButton(id_start);
 
 stub("random is ok");
 }
@@ -89,13 +72,113 @@ stub("random is ok");
  *display congraturation message when the game is done?
  */
 function start(){
-	
+	disableButton(id_setup);
+	disableButton(id_random);
+	disableButton(id_start);
+	enableButton(id_quit);
+
+	$(id_count).val = 3; //FIXME
+
+stub("start is ok");
 }
 
 function quit(){
+	enableButton(id_setup);
+	enableButton(id_random);
+	disableButton(id_quit);
 
+stub("quit is ok");
 }
 
+/*
+ *handle user keypress
+ */
+function handleShortcutKey(event){
+	switch(event.which){
+		case 78:	// n
+			event.preventDefault();
+			$(input_name_n).focus();
+			break;
+		case 75:	// k
+			event.preventDefault();
+			$(input_name_k).focus();
+			break;
+		case 85:	// u
+			event.preventDefault();
+			$(id_setup)
+				.focus()
+				.click();
+			break;
+		case 82:	// r
+			event.preventDefault();
+			$(id_random)
+				.focus()
+				.click();
+			break;
+		case 83:	// s
+			event.preventDefault();
+			$(id_start)
+				.focus()
+				.click();
+			break;
+		case 81:	// q
+			event.preventDefault();
+			$(id_quit)
+				.focus()
+				.click();
+			break;
+		case 37:	// left arrow
+			event.preventDefault();
+			$(id_left)
+				.focus()
+				.prop("checked", true);
+			break;
+		case 39:	// right arrow
+			event.preventDefault();
+			$(id_right)
+				.focus()
+				.prop("checked", true);
+			break;
+		default:
+			//do nothing
+			break;
+	}
+}
+
+function enableButton(button){
+	$(button).prop("disabled", false);
+	$(button).off();	// detach event handler first to avoid duplication
+	$(button).click(getEvtHandlerForSelector(button));
+}
+
+function disableButton(button){
+	$(button).prop("disabled", true);
+	$(button).off();
+}
+
+function getEvtHandlerForSelector(selector){
+	var evtHandler;
+	switch(selector){
+		case id_setup:
+			evtHandler = setup;
+			break;
+		case id_random:
+			evtHandler = random;
+			break;
+		case id_start:
+			evtHandler = start;
+			break;
+		case id_quit:
+			evtHandler = quit;
+			break;
+		default:
+			var msg = "unknown ID: " + ID;
+			alert(msg);
+			throw msg;
+			break;
+	}
+	return evtHandler;
+}
 
 /*
  *validate input 
@@ -222,8 +305,8 @@ function adjustCoinsPosition(number){
 				coordX += (adjacent * -1);
 				coordY += opposite;
 				break;
-			default:
 				//TODO error handling
+			default:
 				alert("error");
 				break;
 		}
@@ -237,57 +320,12 @@ function adjustCoinsPosition(number){
 }
 
 /*
- *handle user keypress
+ *flip coins as many as "k" from the clicked coin in the direction selected on radio button
  */
-function handleShortcutKey(event){
-	switch(event.which){
-		case 78:	// n
-			event.preventDefault();
-			$(input_name_n).focus();
-			break;
-		case 75:	// k
-			event.preventDefault();
-			$(input_name_k).focus();
-			break;
-		case 85:	// u
-			event.preventDefault();
-			$(id_setup)
-				.focus()
-				.click();
-			break;
-		case 82:	// r
-			event.preventDefault();
-			$(id_random)
-				.focus()
-				.click();
-			break;
-		case 83:	// s
-			event.preventDefault();
-			$(id_start)
-				.focus()
-				.click();
-			break;
-		case 81:	// q
-			event.preventDefault();
-			$(id_quit)
-				.focus()
-				.click();
-			break;
-		case 37:	// left arrow
-			event.preventDefault();
-			$(id_left)
-				.focus()
-				.prop("checked", true);
-			break;
-		case 39:	// right arrow
-			event.preventDefault();
-			$(id_right)
-				.focus()
-				.prop("checked", true);
-			break;
-		default:
-			break;
-	}
+function flipcoins(){
+	var k = $(input_name_k).val();
+	
+
 }
 
 /*
@@ -309,9 +347,6 @@ function stub(msg){
  *default input for debug
  */
 function debugSetup(){
-	var input_name_n = 'input[name="n"]';
-	var input_name_k = 'input[name="k"]';
-
 	$(input_name_n).val(6);
 	$(input_name_k).val(3);
 }
