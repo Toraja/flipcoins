@@ -13,10 +13,6 @@ input[type=radio]{
 	width: 50%;
 }
 
-#right {
-	/*margin-left: 2em;*/
-}
-
 .c1{
 	text-align: right;
 }
@@ -35,7 +31,6 @@ button {
 	left: 50%;
 	position: absolute;
 	transform: translate(-50%, -50%);
-	background-color: gray;
 }
 
 #gameinfo{
@@ -49,14 +44,12 @@ button {
 
 #gameinfo td{
 	width: 100%;
-	border: 2px solid black;
 	font-size: 1.3em;
 }
 
 #field{
 	height: 40vw;
 	position: relative;
-	background-color: black;
 }
 
 .coin{

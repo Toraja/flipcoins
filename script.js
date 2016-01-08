@@ -2,16 +2,24 @@ var DEBUG = true;
 
 var input_name_n = 'input[name="n"]';
 var input_name_k = 'input[name="k"]';
+var input_name_direction = 'input[name="direction"]';
 var id_setup = '#setup';
 var id_random = '#random';
 var id_start = '#start';
 var id_quit = '#quit';
-var id_left = '#left';
-var id_right = '#right';
+var id_anticlockwise = '#anticlockwise';
+var id_clockwise = '#clockwise';
 var id_field = '#field';
 var id_coin = '#coin';
 var id_count= '#count';
 var cls_coin = '.coin';
+var clsname_heads = "heads";
+var clsname_tails = "tails";
+var cls_heads = '.' + clsname_heads;
+var cls_tails = '.' + clsname_tails;
+
+var n, k;
+var trialCount = 0;
 
 $(document).ready(function(){
 	// provide default value for n and k
@@ -33,12 +41,15 @@ function setup(){
 	$(id_field).empty();
 
 	//create as many coins as "n" and put them in the field
-	var n = $(input_name_n).val();
-	createCoins(n, "tails");
+	n = $(input_name_n).val();
+	createCoins(n, clsname_tails);
 	setCoinSize(n);
 	adjustCoinsPosition(n);
 
-	//enable start button
+	$(cls_coin).click(flipSingleCoin);
+
+	$(input_name_n).prop("disabled", true);
+	$(input_name_k).prop("disabled", true);
 	enableButton(id_start);
 
 stub("setup is ok");
@@ -53,12 +64,15 @@ function random(){
 	$(id_field).empty();
 
 	//create as many coins as "n" and put them in the field
-	var n = $(input_name_n).val();
+	n = $(input_name_n).val();
 	createCoins(n);
 	setCoinSize(n);
 	adjustCoinsPosition(n);
 
-	//enable start button
+	$(cls_coin).click(flipSingleCoin);
+
+	$(input_name_n).prop("disabled", true);
+	$(input_name_k).prop("disabled", true);
 	enableButton(id_start);
 
 stub("random is ok");
@@ -72,12 +86,19 @@ stub("random is ok");
  *display congraturation message when the game is done?
  */
 function start(){
+	if(checkAllCoinsHeads()){
+		return;
+	}
+
 	disableButton(id_setup);
 	disableButton(id_random);
 	disableButton(id_start);
 	enableButton(id_quit);
 
-	$(id_count).val = 3; //FIXME
+	trialCount = 0;
+	$(id_count).text(0);	// reset trial count
+	$(cls_coin).off();
+	$(cls_coin).click(flipCoins);
 
 stub("start is ok");
 }
@@ -86,6 +107,10 @@ function quit(){
 	enableButton(id_setup);
 	enableButton(id_random);
 	disableButton(id_quit);
+
+	$(cls_coin).off();
+	$(input_name_n).prop("disabled", false);
+	$(input_name_k).prop("disabled", false);
 
 stub("quit is ok");
 }
@@ -129,13 +154,13 @@ function handleShortcutKey(event){
 			break;
 		case 37:	// left arrow
 			event.preventDefault();
-			$(id_left)
+			$(id_anticlockwise)
 				.focus()
 				.prop("checked", true);
 			break;
 		case 39:	// right arrow
 			event.preventDefault();
-			$(id_right)
+			$(id_clockwise)
 				.focus()
 				.prop("checked", true);
 			break;
@@ -228,25 +253,23 @@ function validateInput(){
  *if "side" parameter is undefined, the side of coins are determined randomly
  */
 function createCoins(number, side){
-	var heads = "heads";
-	var tails = "tails";
 	var coinDiv1 = '<div class="coin ';
 	var coinDiv2 = '" id="coin';
 	var coinDiv3 = '"></div>';
 	var coinSide, coinElement;
 
 	// create the first coin element with "tails"
-	coinElement = coinDiv1 + tails + coinDiv2 + "0" + coinDiv3;
+	coinElement = coinDiv1 + clsname_tails + coinDiv2 + "0" + coinDiv3;
 	$(id_field).append(coinElement);
 
 	// determine the side of the rest of the coins
 	for(i = 1; i < number; i++){
 		if(side == undefined){
 			if(Math.floor(Math.random() * 2) == 0){
-				coinSide = heads;
+				coinSide = clsname_heads;
 			}
 			else{
-				coinSide = tails;
+				coinSide = clsname_tails;
 			}
 		}
 		else{
@@ -320,12 +343,61 @@ function adjustCoinsPosition(number){
 }
 
 /*
+ *make sure at least one coin's tail is facing up
+ */
+function checkAllCoinsHeads(){
+	var result = false;
+	if($(cls_tails).size() == 0){
+		alert("At least one coin's face-up side must be tails")
+		result = true;
+	}
+	return result;
+}
+
+/*
+ *flip a coin for setup a game
+ */
+function flipSingleCoin(event, selector){
+	var obj;
+	if(selector == undefined){
+		selector = this;
+	}
+
+	$(selector).toggleClass(clsname_heads);
+	$(selector).toggleClass(clsname_tails);
+}
+/*
  *flip coins as many as "k" from the clicked coin in the direction selected on radio button
  */
-function flipcoins(){
-	var k = $(input_name_k).val();
-	
+function flipCoins(){
+	//check if radio button is selected
+	if($(input_name_direction + ':checked').size() == 0){
+		alert("check the direction");
+		return;
+	}
 
+	k = $(input_name_k).val();
+	
+	//flip the clicked coin
+	flipSingleCoin(null, this);
+	//get this coin's id and the number in the id
+	var thisCoinIDNum = this.id.replace("coin", "");
+	var coinIDNumToFlip;
+	var direction = $(input_name_direction + ":checked").attr('id');
+	var index = 1;		//for which way to flip coin
+	if(direction == "anticlockwise"){
+		index = -1;
+	}
+
+	for(i = 1; i < k; i++){
+		coinIDNumToFlip = (i * index + parseInt(thisCoinIDNum)) % n;
+		if(coinIDNumToFlip < 0){
+			coinIDNumToFlip += parseInt(n);
+		}
+
+		flipSingleCoin(null, '#coin' + coinIDNumToFlip);
+	}
+	$(id_count).text(++trialCount);
 }
 
 /*
