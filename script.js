@@ -1,4 +1,4 @@
-var DEBUG = true;
+//var DEBUG = true;
 
 var input_name_n = 'input[name="n"]';
 var input_name_k = 'input[name="k"]';
@@ -22,14 +22,12 @@ var n, k;
 var trialCount = 0;
 
 $(document).ready(function(){
-	// provide default value for n and k
-	debugSetup();
-
 	$(document).keyup(handleShortcutKey);
 	$(id_setup).click(setup);
 	$(id_random).click(random);
 	
-stub(".ready is ok");
+	// provide default value for n and k
+	debugSetup();
 });
 
 /*
@@ -37,22 +35,7 @@ stub(".ready is ok");
  *let user decide the side of each coin
  */
 function setup(){
-	//empty out the field
-	$(id_field).empty();
-
-	//create as many coins as "n" and put them in the field
-	n = $(input_name_n).val();
-	createCoins(n, clsname_tails);
-	setCoinSize(n);
-	adjustCoinsPosition(n);
-
-	$(cls_coin).click(flipSingleCoin);
-
-	$(input_name_n).prop("disabled", true);
-	$(input_name_k).prop("disabled", true);
-	enableButton(id_start);
-
-stub("setup is ok");
+	commonSetup(clsname_tails);
 }
 
 /*
@@ -60,22 +43,7 @@ stub("setup is ok");
  *user can set up manually after coins were placed
  */
 function random(){
-	//empty out the field
-	$(id_field).empty();
-
-	//create as many coins as "n" and put them in the field
-	n = $(input_name_n).val();
-	createCoins(n);
-	setCoinSize(n);
-	adjustCoinsPosition(n);
-
-	$(cls_coin).click(flipSingleCoin);
-
-	$(input_name_n).prop("disabled", true);
-	$(input_name_k).prop("disabled", true);
-	enableButton(id_start);
-
-stub("random is ok");
+	commonSetup();
 }
 /*
 
@@ -83,10 +51,11 @@ stub("random is ok");
  *enable "Quit" button
  *reset the number of click
  *start counting the number of click
- *display congraturation message when the game is done?
+ *TODO display congraturation message when the game is done
  */
 function start(){
 	if(checkAllCoinsHeads()){
+		alert("At least one coin's face-up side must be tails")
 		return;
 	}
 
@@ -99,8 +68,7 @@ function start(){
 	$(id_count).text(0);	// reset trial count
 	$(cls_coin).off();
 	$(cls_coin).click(flipCoins);
-
-stub("start is ok");
+	$(cls_coin).click(checkGameEnds);
 }
 
 function quit(){
@@ -111,8 +79,6 @@ function quit(){
 	$(cls_coin).off();
 	$(input_name_n).prop("disabled", false);
 	$(input_name_k).prop("disabled", false);
-
-stub("quit is ok");
 }
 
 /*
@@ -197,7 +163,7 @@ function getEvtHandlerForSelector(selector){
 			evtHandler = quit;
 			break;
 		default:
-			var msg = "unknown ID: " + ID;
+			var msg = "unknown selector: " + selector;
 			alert(msg);
 			throw msg;
 			break;
@@ -206,15 +172,54 @@ function getEvtHandlerForSelector(selector){
 }
 
 /*
+ *parameter is for "createCoins()" (optional)
+ */
+function commonSetup(coinSide){
+	n = $(input_name_n).val();
+	k = $(input_name_k).val();
+
+	if(! validateInput()){
+		return;
+	}
+
+	//empty out the field
+	$(id_field).empty();
+
+	//create as many coins as "n" and put them in the field
+	var repeat = true;
+	do{
+		createCoins(n, coinSide);
+		if(checkAllCoinsHeads()){
+			$(id_field).empty();
+			stub("repeated");
+		}
+		else{
+			repeat = false;
+		}
+	}while(repeat);
+
+	setCoinSize(n);
+	adjustCoinsPosition(n);
+
+	$(cls_coin).click(flipSingleCoin);
+
+	$(input_name_n).prop("disabled", true);
+	$(input_name_k).prop("disabled", true);
+	enableButton(id_start);
+}
+
+/*
  *validate input 
  */
 function validateInput(){
+	valid = true;		// result of validation
 
 	/*
 	 *private function for validateInput
 	 */
 	function validateHighLowEmpty(targetInput, lowerLimit, upperLimit, msgSubject){
-		var val = $(targetInput).val();
+		var val = eval(msgSubject);
+		console.log(msgSubject + ": " + val);
 		
 		try{
 			if(val == "") throw "empty";
@@ -223,25 +228,20 @@ function validateInput(){
 		}
 		catch(err){
 			alert(msgSubject + " is " + err);
-			//clear invalid textbox
-			$(targetInput).val("");
-			//focus invalid textbox
 			$(targetInput).focus();
+			$(targetInput).select();
 			
 			//rethrow the err for the caller to handle it
 			throw err
 		}
 	}
 
-	// ***** input validation *****
-	//validate n (not empty, 3 <= n <= 20)
-	if(! validateInput(input_name_n, 3, 20, "n")){
-		return valid;
+	try{
+		validateHighLowEmpty(input_name_n, 3, 20, "n");
+		validateHighLowEmpty(input_name_k, 1, n * 2, "k");
 	}
-
-	//validate k (not empty, 1 <= k <= n*2)
-	if(! validateInput(input_name_k, 1, eval("n * 2"), "k")){
-		return valid;
+	catch(err){
+		valid = false;
 	}
 
 	return valid;
@@ -259,11 +259,11 @@ function createCoins(number, side){
 	var coinSide, coinElement;
 
 	// create the first coin element with "tails"
-	coinElement = coinDiv1 + clsname_tails + coinDiv2 + "0" + coinDiv3;
-	$(id_field).append(coinElement);
+	//coinElement = coinDiv1 + clsname_tails + coinDiv2 + "0" + coinDiv3;
+	//$(id_field).append(coinElement);
 
 	// determine the side of the rest of the coins
-	for(i = 1; i < number; i++){
+	for(i = 0; i < number; i++){
 		if(side == undefined){
 			if(Math.floor(Math.random() * 2) == 0){
 				coinSide = clsname_heads;
@@ -276,6 +276,7 @@ function createCoins(number, side){
 			coinSide = side;
 		}
 
+		//add a coin element to the field
 		coinElement = coinDiv1 + coinSide + coinDiv2 + i + coinDiv3;
 		$(id_field).append(coinElement);
 	}
@@ -348,7 +349,6 @@ function adjustCoinsPosition(number){
 function checkAllCoinsHeads(){
 	var result = false;
 	if($(cls_tails).size() == 0){
-		alert("At least one coin's face-up side must be tails")
 		result = true;
 	}
 	return result;
@@ -400,6 +400,12 @@ function flipCoins(){
 	$(id_count).text(++trialCount);
 }
 
+function checkGameEnds(){
+	if(checkAllCoinsHeads()){
+		alert('Congrats!!\nYou completed the game.');
+		quit();
+	}
+}
 /*
  *for debug
  *this popup the argument or line number if no argument is supplied
@@ -419,6 +425,8 @@ function stub(msg){
  *default input for debug
  */
 function debugSetup(){
-	$(input_name_n).val(6);
-	$(input_name_k).val(3);
+	if(DEBUG){
+		$(input_name_n).val(6);
+		$(input_name_k).val(3);
+	}
 }
