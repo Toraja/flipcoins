@@ -1,8 +1,10 @@
-//var DEBUG = true;
+var DEBUG = true;
+//var DEBUG = false;
 
 var input_name_n = 'input[name="n"]';
 var input_name_k = 'input[name="k"]';
 var input_name_direction = 'input[name="direction"]';
+var idname_coin = "coin";
 var id_setup = '#setup';
 var id_random = '#random';
 var id_start = '#start';
@@ -10,15 +12,17 @@ var id_quit = '#quit';
 var id_anticlockwise = '#anticlockwise';
 var id_clockwise = '#clockwise';
 var id_field = '#field';
-var id_coin = '#coin';
+var id_coin = '#' + idname_coin;
 var id_count= '#count';
 var cls_coin = '.coin';
 var clsname_heads = "heads";
 var clsname_tails = "tails";
-var cls_heads = '.' + clsname_heads;
-var cls_tails = '.' + clsname_tails;
+var clsname_up = "up";
+var clsname_down = "down";
+var cls_down = '.' + clsname_down;
 
 var n, k;
+var coinSize;
 var trialCount = 0;
 
 $(document).ready(function(){
@@ -36,6 +40,7 @@ $(document).ready(function(){
  */
 function setup(){
 	commonSetup(clsname_tails);
+	addBorder();
 }
 
 /*
@@ -44,6 +49,7 @@ function setup(){
  */
 function random(){
 	commonSetup();
+	addBorder();
 }
 /*
 
@@ -51,7 +57,7 @@ function random(){
  *enable "Quit" button
  *reset the number of click
  *start counting the number of click
- *TODO display congraturation message when the game is done
+ *display congraturation message when the game is done
  */
 function start(){
 	if(checkAllCoinsHeads()){
@@ -249,21 +255,22 @@ function validateInput(){
 
 /*
  *create coins the id of which is 0 to n - 1
- *the side of the first coin (coin0) is always tails
  *if "side" parameter is undefined, the side of coins are determined randomly
  */
 function createCoins(number, side){
-	var coinDiv1 = '<div class="coin ';
-	var coinDiv2 = '" id="coin';
-	var coinDiv3 = '"></div>';
-	var coinSide, coinElement;
-
-	// create the first coin element with "tails"
-	//coinElement = coinDiv1 + clsname_tails + coinDiv2 + "0" + coinDiv3;
-	//$(id_field).append(coinElement);
+	var coinDiv1 = '<div class="coin" id="';
+	var coinDiv2 = '"><div class="heads"></div><div class="tails"></div></div>';
+	var coinSide = side; 
+	var coinElement, thisCoinIDName;
 
 	// determine the side of the rest of the coins
 	for(i = 0; i < number; i++){
+		//add a coin element to the field
+		thisCoinIDName = idname_coin + i;
+		thisCoinID = '#' + thisCoinIDName;
+		coinElement = coinDiv1 + thisCoinIDName + coinDiv2;
+		$(id_field).append(coinElement);
+
 		if(side == undefined){
 			if(Math.floor(Math.random() * 2) == 0){
 				coinSide = clsname_heads;
@@ -272,13 +279,13 @@ function createCoins(number, side){
 				coinSide = clsname_tails;
 			}
 		}
-		else{
-			coinSide = side;
-		}
 
-		//add a coin element to the field
-		coinElement = coinDiv1 + coinSide + coinDiv2 + i + coinDiv3;
-		$(id_field).append(coinElement);
+		if(coinSide == clsname_heads){
+			$(thisCoinID).addClass(clsname_up);
+		}
+		else{
+			$(thisCoinID).addClass(clsname_down);
+		}
 	}
 }
 
@@ -287,7 +294,7 @@ function createCoins(number, side){
  */
 function setCoinSize(number){
 	var sizeCoeff = (3 / 18).toFixed(3);			//coefficient for increase in size
-	var coinSize = 5 - ((number - 3) * sizeCoeff)	//size changes depending on the num of coins
+	coinSize = 5 - ((number - 3) * sizeCoeff)	//size changes depending on the num of coins
 	$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
 }
 
@@ -302,8 +309,8 @@ function adjustCoinsPosition(number){
 	var centralAngle = Math.floor(360 / number);	// central angle of n-gon
 
 	for(i = 0; i < number; i++){
-		var coordX = 50; 		// base value of css "left" property (center of the field)
-		var coordY = 50; 		// base value of css "bottom" property (center of the field)
+		var coordX = 50/* - coinSize*/; 		// base value of css "left" property (center of the field)
+		var coordY = 50/* - coinSize*/; 		// base value of css "bottom" property (center of the field)
 		var id_coin_n = id_coin + i;		// id of each coin, the top being "coin0" and incremented by 1 clockwise
 		var currentAngle = centralAngle * i;		// angle between the top apex and n(i)th apex
 		var apexRegion = Math.floor(currentAngle / 90);		// region where apex is located
@@ -329,8 +336,8 @@ function adjustCoinsPosition(number){
 				coordX += (adjacent * -1);
 				coordY += opposite;
 				break;
-				//TODO error handling
 			default:
+				//TODO error handling
 				alert("error");
 				break;
 		}
@@ -348,7 +355,7 @@ function adjustCoinsPosition(number){
  */
 function checkAllCoinsHeads(){
 	var result = false;
-	if($(cls_tails).size() == 0){
+	if($(cls_down).size() == 0){
 		result = true;
 	}
 	return result;
@@ -363,8 +370,8 @@ function flipSingleCoin(event, selector){
 		selector = this;
 	}
 
-	$(selector).toggleClass(clsname_heads);
-	$(selector).toggleClass(clsname_tails);
+	$(selector).toggleClass(clsname_up);
+	$(selector).toggleClass(clsname_down);
 }
 /*
  *flip coins as many as "k" from the clicked coin in the direction selected on radio button
@@ -402,8 +409,10 @@ function flipCoins(){
 
 function checkGameEnds(){
 	if(checkAllCoinsHeads()){
-		alert('Congrats!!\nYou completed the game.');
-		quit();
+		setTimeout(function(){
+			alert('Congrats!!\nYou completed the game.');
+			quit();
+		}, 500);
 	}
 }
 /*
@@ -426,7 +435,20 @@ function stub(msg){
  */
 function debugSetup(){
 	if(DEBUG){
-		$(input_name_n).val(6);
+		$(input_name_n).val(16);
 		$(input_name_k).val(3);
+	}
+}
+
+function addBorder(){
+	if(DEBUG){
+		var rowNum = 10;
+		var colNum = 10; 
+		for(i = 0; i < rowNum; i++){
+			$(id_field).append("<div class=\"row\"></div>");
+		}
+		for(i = 0; i < colNum; i++){
+			$(".row").append("<div class=\"column\"></div>");
+		}
 	}
 }

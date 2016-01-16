@@ -52,16 +52,110 @@ button {
 	position: relative;
 }
 
-.coin{
+.coin {
 	border-radius: 50%;
-	transform: translate(-50%, 70%);
+	position: absolute;
+	/*transform: translate(-50%, 70%);*/  /* <<< makes coins' position weird */
+	transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+	animation-duration: 0.5s;
+	-webkit-animation-duration: 0.5s;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+}
+
+.coin * {
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
 	position: absolute;
 }
 
-.heads{
+.heads {
 	background-color: orange;
+	transform: translateZ(1px);
+	-webkit-transform: translateZ(1px);
 }
 
-.tails{
+.tails {
 	background-color: grey;
+	transform: translateZ(-1px);
+	-webkit-transform: translateZ(-1px);
 }
+
+.up {
+	-webkit-animation-name: tails2heads;
+}
+
+.down {
+	transform: rotateY(180deg);
+	-webkit-transform: rotateY(180deg);
+	-webkit-animation-name: heads2tails;
+}
+
+@-webkit-keyframes heads2tails {
+	from { -webkit-transform: rotateY(0); -moz-transform: rotateY(0); transform: rotateY(0); }
+	to { -webkit-transform: rotateY(180deg); -moz-transform: rotateY(180deg); transform: rotateY(180deg); }
+}
+
+@-webkit-keyframes tails2heads {
+	from { -webkit-transform: rotateY(180deg); -moz-transform: rotateY(180deg); transform: rotateY(180deg); }
+	to { -webkit-transform: rotateY(360deg); -moz-transform: rotateY(360deg); transform: rotateY(360deg); }
+}
+
+
+/*for debug*/
+#container {
+	background-color: gray;
+}
+
+#field {
+	background-color: black;
+}
+
+.row, .column {
+	box-sizing: border-box;
+}
+/*
+.row:before, .row:after {
+	content: " ";
+	display: table;
+}
+
+.row:after {
+	clear: both;
+}
+*/
+.row{
+	height: 10%;
+	width: 100%;
+}
+.column {
+    position: relative;
+    float: left;
+	border: 1px solid yellow;
+	height: 100%;
+	width: 10%;
+}
+/*
+.column + .column {
+	margin-left: 1.6%;
+}
+
+.col-1 {width: 10%;}
+.col-2 {width: 20%;}
+.col-3 {width: 30%;}
+.col-4 {width: 40%;}
+.col-5 {width: 50%;}
+.col-6 {width: 60%;}
+.col-7 {width: 70%;}
+.col-8 {width: 80%;}
+.col-9 {width: 90%;}
+.col-10 {width: 100%;}
+
+[class*="col-"] {
+	float: left;
+	padding: 15px;
+	border: 1px solid yellow;
+}
+*/
