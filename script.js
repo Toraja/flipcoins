@@ -291,11 +291,14 @@ function createCoins(number, side){
 
 /*
  *adjust the size of coins depending on the number of coins(n)
+ *maximus size being 12.5% and minimum being 60% of the maximum
  */
 function setCoinSize(number){
-	var sizeCoeff = (3 / 18).toFixed(3);			//coefficient for increase in size
-	coinSize = 5 - ((number - 3) * sizeCoeff)	//size changes depending on the num of coins
-	$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
+	var sizeCoeff = (0.4 / 17).toFixed(3);			//coefficient for decrease in size
+	//coinSize = 5 - ((number - 3) * sizeCoeff)		//size changes depending on the num of coins
+	//$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
+	coinSize = 12.5 * (1 - ((number - 3) * sizeCoeff))	//size changes depending on the num of coins
+	$(cls_coin).css({"height": coinSize + "%", "width": coinSize + "%"});
 }
 
 /*
