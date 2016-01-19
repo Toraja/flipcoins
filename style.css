@@ -55,7 +55,7 @@ button {
 .coin {
 	border-radius: 50%;
 	position: absolute;
-	/*transform: translate(-50%, 70%);*/  /* <<< makes coins' position weird */
+	/*transform: translate(-50%, 70%);  [> <<< makes coins' position weird <]*/
 	transform-style: preserve-3d;
 	-webkit-transform-style: preserve-3d;
 	animation-duration: 0.5s;
@@ -105,6 +105,7 @@ button {
 
 
 /*for debug*/
+/*
 #container {
 	background-color: gray;
 }
@@ -123,9 +124,10 @@ button {
 	width: 100%;
 }
 .column {
-    position: relative;
-    float: left;
+	position: relative;
+	float: left;
 	border: 1px solid yellow;
 	height: 100%;
 	width: 10%;
 }
+ */

@@ -1,5 +1,5 @@
-var DEBUG = true;
-//var DEBUG = false;
+//var DEBUG = true;
+var DEBUG = false;
 
 var input_name_n = 'input[name="n"]';
 var input_name_k = 'input[name="k"]';
@@ -95,10 +95,12 @@ function handleShortcutKey(event){
 		case 78:	// n
 			event.preventDefault();
 			$(input_name_n).focus();
+			$(input_name_n).select();
 			break;
 		case 75:	// k
 			event.preventDefault();
 			$(input_name_k).focus();
+			$(input_name_k).select();
 			break;
 		case 85:	// u
 			event.preventDefault();
@@ -295,8 +297,6 @@ function createCoins(number, side){
  */
 function setCoinSize(number){
 	var sizeCoeff = (0.4 / 17).toFixed(3);			//coefficient for decrease in size
-	//coinSize = 5 - ((number - 3) * sizeCoeff)		//size changes depending on the num of coins
-	//$(cls_coin).css({"height": coinSize + "vw", "width": coinSize + "vw"});
 	coinSize = 12.5 * (1 - ((number - 3) * sizeCoeff))	//size changes depending on the num of coins
 	$(cls_coin).css({"height": coinSize + "%", "width": coinSize + "%"});
 }
@@ -309,11 +309,11 @@ function setCoinSize(number){
 function adjustCoinsPosition(number){
 	//calculate coordinates for each coins
 	var radius = 42;		// radius of the circle of coins (percentage of the length of a side of field)
-	var centralAngle = Math.floor(360 / number);	// central angle of n-gon
+	var centralAngle = 360 / number;	// central angle of n-gon
 
 	for(i = 0; i < number; i++){
-		var coordX = 50/* - coinSize*/; 		// base value of css "left" property (center of the field)
-		var coordY = 50/* - coinSize*/; 		// base value of css "bottom" property (center of the field)
+		var coordX = 50 - (coinSize / 2); 		// base value of css "left" property (center of the field)
+		var coordY = 47 - (coinSize / 2); 		// base value of css "bottom" property (center of the field)
 		var id_coin_n = id_coin + i;		// id of each coin, the top being "coin0" and incremented by 1 clockwise
 		var currentAngle = centralAngle * i;		// angle between the top apex and n(i)th apex
 		var apexRegion = Math.floor(currentAngle / 90);		// region where apex is located
@@ -321,6 +321,13 @@ function adjustCoinsPosition(number){
 		var radian = Math.PI * (coordinateAngle / 180);
 		var opposite = radius * Math.sin(radian);
 		var adjacent = radius * Math.cos(radian);
+
+		console.log("i: " + i);
+		console.log("currentAngle: " + currentAngle);
+		console.log("apexRegion: " + apexRegion);
+		console.log("coordinateAngle: " + coordinateAngle);
+		console.log("opposite: " + opposite);
+		console.log("adjacent: " + adjacent);
 
 		switch(apexRegion){
 			case 0:
